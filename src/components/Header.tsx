@@ -1,14 +1,33 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import { NavLink, useLocation } from 'react-router-dom'
+import { useAppStore } from '../stores/useAppStore';
 
 export default function Header() {
+
+    const [searchFilters, setSearchFilters] = useState({
+        ingredient: '',
+        category: ''
+    })
 
     const {pathname} = useLocation();
 
     const isHome = useMemo(() => pathname === '/', [pathname])
 
-    console.log(isHome)
-     
+    const fetchCategories = useAppStore((state) => state.fetchCategories);
+    const categories = useAppStore((state) => state.categories);
+
+    console.log(categories)
+
+    useEffect(() => {
+        fetchCategories()
+    }, [])
+    
+    const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) =>{
+        setSearchFilters({
+            ...searchFilters,
+            [e.target.name] : e.target.value
+        })
+    }
   return (
     <header className = {isHome ? 'bg-[url("/bg.jpg")] bg-center bg-cover min-h-100' : 'bg-slate-800'} > 
         <div className="mx-auto container px-5 py-16">
@@ -36,6 +55,8 @@ export default function Header() {
                             name = 'ingredient'
                             className = 'p-3 w-full rounded-lg focus:outline-none'
                             placeholder = 'Ej: Café, vodka, etc...'
+                            onChange = {handleChange}
+                            value = {searchFilters.ingredient}
                         />
                     </div>
                     <div className = 'space-y-4'>
@@ -49,8 +70,15 @@ export default function Header() {
                             id = 'category'
                             name = 'category'
                             className = 'p-3 w-full rounded-lg focus:outline-none'
+                            onChange = {handleChange}
+                            value = {searchFilters.ingredient}
                         >
                             <option value="">--Seleccione--</option> 
+                            {categories.drinks.map( category => (
+                                <option value={category.strCategory} key={category.strCategory}>
+                                    {category.strCategory} 
+                                </option>
+                            ))}
 
                         </select>
                     </div>
