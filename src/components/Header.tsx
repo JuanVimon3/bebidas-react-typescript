@@ -21,7 +21,7 @@ export default function Header() {
 
     useEffect(() => {
         fetchCategories()
-    }, [])
+    },[fetchCategories])
     
     const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) =>{
         setSearchFilters({
@@ -88,7 +88,7 @@ export default function Header() {
                             name = 'category'
                             className = 'p-3 w-full rounded-lg focus:outline-none'
                             onChange = {handleChange}
-                            value = {searchFilters.ingredient}
+                            value = {searchFilters.category}
                         >
                             <option value="">--Seleccione--</option> 
                             {categories.drinks.map( category => (
